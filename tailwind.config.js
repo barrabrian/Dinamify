@@ -20,6 +20,10 @@ module.exports = {
       yellow: colors.yellow,
       green: colors.green,
       gray: colors.blueGray,
+      teal: colors.teal,
+      emerald: colors.emerald,
+      zinc: colors.zinc,
+      slate: colors.slate,
       indigo: {
         100: '#e6e8ff',
         300: '#b2b7ff',

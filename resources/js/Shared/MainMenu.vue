@@ -1,27 +1,27 @@
 <template>
   <div>
-    <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/">
-        <icon name="dashboard" class="mr-2 w-4 h-4" :class="isUrl('') ? 'fill-white' : 'fill-indigo-400 group-hover:fill-white'" />
-        <div :class="isUrl('') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Dashboard</div>
+    <div class="flex items-center justify-left flex-wrap font-bold">
+      <Link class="group flex items-center py-4 px-6 border-r border-gray-900" :class="isUrl('') ? 'bg-gradient-to-b from-gray-500 to-gray-600' : ''" href="/">
+        <icon name="bezier" class="mr-2 w-4 h-4" :class="isUrl('') ? 'fill-emerald-400' : 'fill-white group-hover:fill-white'" />
+        <div :class="isUrl('') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Fluxos</div>
       </Link>
-    </div>
-    <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/organizations">
-        <icon name="office" class="mr-2 w-4 h-4" :class="isUrl('organizations') ? 'fill-white' : 'fill-indigo-400 group-hover:fill-white'" />
-        <div :class="isUrl('organizations') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Organizations</div>
+
+
+      <Link class="group flex items-center py-4 px-6 border-r border-gray-900" :class="isUrl('forms') ? 'bg-gradient-to-b from-gray-500 to-gray-600' : ''" href="/forms">
+        <icon name="post" class="mr-2 w-4 h-4" :class="isUrl('forms') ? 'fill-emerald-400' : 'fill-white group-hover:fill-white'" />
+        <div :class="isUrl('forms') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Formulários</div>
       </Link>
-    </div>
-    <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/contacts">
-        <icon name="users" class="mr-2 w-4 h-4" :class="isUrl('contacts') ? 'fill-white' : 'fill-indigo-400 group-hover:fill-white'" />
-        <div :class="isUrl('contacts') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Contacts</div>
+
+
+      <Link class="group flex items-center py-4 px-6 border-r border-gray-900" :class="isUrl('deliverables') ? 'bg-gradient-to-b from-gray-500 to-gray-600' : ''" href="/deliverables">
+        <icon name="product" class="mr-2 w-4 h-4" :class="isUrl('deliverables') ? 'fill-emerald-400' : 'fill-white group-hover:fill-white'" />
+        <div :class="isUrl('deliverables') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Entregáveis</div>
       </Link>
-    </div>
-    <div class="mb-4">
-      <Link class="group flex items-center py-3" href="/reports">
-        <icon name="printer" class="mr-2 w-4 h-4" :class="isUrl('reports') ? 'fill-white' : 'fill-indigo-400 group-hover:fill-white'" />
-        <div :class="isUrl('reports') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Reports</div>
+
+
+      <Link class="group flex items-center py-4 px-6 border-r border-gray-900" :class="isUrl('settings') ? 'bg-gradient-to-b from-gray-500 to-gray-600' : ''" href="/settings/plugins">
+        <icon name="config" class="mr-2 w-4 h-4" :class="isUrl('settings') ? 'fill-emerald-400' : 'fill-white group-hover:fill-white'" />
+        <div :class="isUrl('settings') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Configurações</div>
       </Link>
     </div>
   </div>

@@ -1,12 +1,24 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\ContactsController;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImagesController;
+use App\Http\Controllers\EbooksController;
 use App\Http\Controllers\OrganizationsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UsersController;
+
+use App\Http\Controllers\QuestionsController;
+
+use App\Http\Controllers\TypeformPluginsController;
+use App\Http\Controllers\ActiveCampaignPluginsController;
+use App\Http\Controllers\PluginsController;
+use App\Http\Controllers\FormsController;
+use App\Http\Controllers\AutomationsController;
+
+use App\Http\Controllers\DeliverablesController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,13 +47,192 @@ Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
 
 // Dashboard
 
-Route::get('/', [DashboardController::class, 'index'])
-    ->name('dashboard')
+// Route::get('/', [OrganizationsController::class, 'index'])
+//     ->name('flows')
+//     ->middleware('auth');
+
+// Route::get('/', [DashboardController::class, 'index'])
+//     ->name('dashboard')
+//     ->middleware('auth');
+
+
+// Forms
+
+Route::get('forms', [FormsController::class, 'index'])
+    ->name('forms')
     ->middleware('auth');
+
+Route::get('forms/{selected_form}/view', [FormsController::class, 'view'])
+    ->name('forms.view')
+    ->middleware('auth');
+
+Route::get('forms/{selected_form}/{question}/view', [QuestionsController::class, 'view'])
+    ->name('question.view')
+    ->middleware('auth');
+
+    
+
+
+
+
+// Questions
+
+Route::get('questions', [QuestionsController::class, 'index'])
+    ->name('questions')
+    ->middleware('auth');
+
+Route::get('questions/{question}/view', [QuestionsController::class, 'view'])
+    ->name('questions.edit')
+    ->middleware('auth');
+
+
+
+
+
+// Settings
+
+Route::get('settings/plugins', [PluginsController::class, 'index'])
+    ->name('plugins')
+    ->middleware('auth');
+
+Route::post('settings/plugins/typeform', [TypeformPluginsController::class, 'store'])
+    ->name('typeform.store')
+    ->middleware('auth');
+
+Route::get('settings/plugins/typeform/create', [TypeformPluginsController::class, 'create'])
+    ->name('typeform.create')
+    ->middleware('auth');
+
+Route::get('settings/plugins/typeform/{plugin}/edit', [TypeformPluginsController::class, 'edit'])
+    ->name('typeform.edit')
+    ->middleware('auth');
+
+Route::put('settings/plugins/typeform/{plugin}', [TypeformPluginsController::class, 'update'])
+    ->name('typeform.update')
+    ->middleware('auth');
+
+Route::delete('settings/plugins/typeform/{plugin}', [TypeformPluginsController::class, 'destroy'])
+    ->name('typeform.destroy')
+    ->middleware('auth');
+
+Route::put('settings/plugins/typeform/{plugin}/restore', [TypeformPluginsController::class, 'restore'])
+    ->name('typeform.restore')
+    ->middleware('auth');
+
+
+Route::get('settings/plugins/typeform/{plugin}/sync', [TypeformPluginsController::class, 'sync'])
+    ->name('typeform.sync')
+    ->middleware('auth');
+
+
+Route::post('settings/plugins/activecampaign', [ActiveCampaignPluginsController::class, 'store'])
+    ->name('activecampaign.store')
+    ->middleware('auth');
+
+Route::get('settings/plugins/activecampaign/create', [ActiveCampaignPluginsController::class, 'create'])
+    ->name('activecampaign.create')
+    ->middleware('auth');
+
+Route::get('settings/plugins/activecampaign/{plugin}/edit', [ActiveCampaignPluginsController::class, 'edit'])
+    ->name('activecampaign.edit')
+    ->middleware('auth');
+
+Route::put('settings/plugins/activecampaign/{plugin}', [ActiveCampaignPluginsController::class, 'update'])
+    ->name('activecampaign.update')
+    ->middleware('auth');
+
+Route::delete('settings/plugins/activecampaign/{plugin}', [ActiveCampaignPluginsController::class, 'destroy'])
+    ->name('activecampaign.destroy')
+    ->middleware('auth');
+    
+
+
+
+
+// Deliverables
+
+Route::get('deliverables', [DeliverablesController::class, 'index'])
+    ->name('deliverables')
+    ->middleware('auth');
+
+Route::get('deliverables/create', [DeliverablesController::class, 'create'])
+    ->name('deliverables.create')
+    ->middleware('auth');
+
+Route::post('deliverables', [DeliverablesController::class, 'store'])
+    ->name('deliverables.store')
+    ->middleware('auth');
+
+Route::get('deliverables/{deliverable}/edit', [DeliverablesController::class, 'edit'])
+    ->name('deliverables.edit')
+    ->middleware('auth');
+
+Route::put('deliverables/{deliverable}', [DeliverablesController::class, 'update'])
+    ->name('deliverables.update')
+    ->middleware('auth');
+
+Route::get('deliverables/{deliverable}/createpdf', [DeliverablesController::class, 'createPDF'])
+    ->name('deliverables.createpdf');
+
+
+
+// Flows
+
+Route::get('/', [AutomationsController::class, 'index'])
+    ->name('flows')
+    ->middleware('auth');
+
+Route::get('flows/create', [AutomationsController::class, 'create'])
+    ->name('flows.create')
+    ->middleware('auth');
+
+Route::post('flows', [AutomationsController::class, 'store'])
+    ->name('flows.store')
+    ->middleware('auth');
+
+Route::get('flows/{flow}/edit', [AutomationsController::class, 'edit'])
+    ->name('flows.edit')
+    ->middleware('auth');
+
+Route::put('flows/{flow}', [AutomationsController::class, 'update'])
+    ->name('flows.update')
+    ->middleware('auth');
+
+Route::get('flows/{flow}/execute', [AutomationsController::class, 'execute'])
+    ->name('flows.execute')
+    ->middleware('auth');
+
+
+
+// Images
+
+Route::get('/img/{path}', [ImagesController::class, 'show'])
+    ->where('path', '.*')
+    ->name('image');
+
+Route::get('settings/images', [ImagesController::class, 'index'])
+    ->name('images')
+    ->middleware('auth');
+
+Route::get('settings/images/create', [ImagesController::class, 'create'])
+    ->name('image.create')
+    ->middleware('auth');
+
+Route::post('settings/images', [DeliverablesController::class, 'storeImage'])
+    ->name('image.store')
+    ->middleware('auth');
+
+
+// Ebooks
+
+Route::get('/ebooks/{path}', [EbooksController::class, 'show'])
+    ->name('ebook');
+
+
 
 // Users
 
-Route::get('users', [UsersController::class, 'index'])
+Route::get('settings/users', [UsersController::class, 'index'])
     ->name('users')
     ->middleware('auth');
 
@@ -53,7 +244,7 @@ Route::post('users', [UsersController::class, 'store'])
     ->name('users.store')
     ->middleware('auth');
 
-Route::get('users/{user}/edit', [UsersController::class, 'edit'])
+Route::get('settings/users/{user}/edit', [UsersController::class, 'edit'])
     ->name('users.edit')
     ->middleware('auth');
 
@@ -135,8 +326,5 @@ Route::get('reports', [ReportsController::class, 'index'])
     ->name('reports')
     ->middleware('auth');
 
-// Images
 
-Route::get('/img/{path}', [ImagesController::class, 'show'])
-    ->where('path', '.*')
-    ->name('image');
+
