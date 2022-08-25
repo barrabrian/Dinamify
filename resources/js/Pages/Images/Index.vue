@@ -11,7 +11,7 @@
           <Link class="group flex justify-center py-8 items-center bg-white w-full border-b border-gray-300" href="/settings/images">
             <icon name="image" class="w-8 h-8 fill-gray-700 group-hover:fill-gray-900" />
           </Link>
-          <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="#">
+          <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="/settings/users">
             <icon name="person" class="w-8 h-8 fill-gray-700 group-hover:fill-gray-900" />
           </Link>
           <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="#">
@@ -35,7 +35,7 @@
           <div class="grid gap-4">
 
             <div class="grid gap-4 grid-cols-6">
-                <div v-for="(image, index) in images.data" :key="index" class="rounded shadow">
+                <div v-for="(image, index) in images.data" :key="index" class="rounded shadow bg-white">
                     <img class="object-cover w-full h-32 rounded" :src="image.image_path" >
                 </div>
             </div>

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class DeliverablesController extends Controller
@@ -34,11 +35,13 @@ class DeliverablesController extends Controller
         ]);
     }
 
-    public function createPDF(Deliverable $deliverable)
+    public function createPDF(Deliverable $deliverable, $response_id)
     {
         // $deliverable = Auth::user()->account->deliverables()->first();
 
         // dd($deliverable);
+
+        if (!$deliverable || !$response_id) {return Redirect::back()->with('error', "Erro: Parametros Incorretos!");}
 
         $html = "<html><head><style>body{font-family: sans-serif;} .page-break{page-break-after: always;} @page {margin: 120px 60px;} header {position: fixed;top: -60px;left: 0px;right: 0px;height: 50px;
                 line-height: 35px;} footer {position: fixed; bottom: -80px; left: 0px; right: 0px;height: 30px; padding: 0 100px;
@@ -52,7 +55,7 @@ class DeliverablesController extends Controller
 
         // $html = $html.$deliverable->html;
         $html_aux = '';
-        $ans_id = '';
+        $ans_id = $response_id;
 
 
         $html_aux = explode('<div class="page-break"></div>', $deliverable->html);
@@ -88,8 +91,10 @@ class DeliverablesController extends Controller
                 } else { 
                     $ans = Answer::where('question_id', $cond[0])->where('answer_id', $ans_id)->first();
                 }
-
                 // dd($cond);
+                if (!$ans) {
+                    return "Este modelo possui variáveis de outra Origem de Dados.";
+                }
 
                 if ($ans->value == $cond[1]) {
                     $html_wifs = $html_wifs . $cond_content;
@@ -131,6 +136,10 @@ class DeliverablesController extends Controller
                     } else { 
                         $ans = Answer::where('question_id', $dinamic[0])->where('answer_id', $ans_id)->first();
                     }
+
+                    if (!$ans) {
+                        return "Este modelo possui variáveis de outra Origem de Dados.";;
+                    }    
                     
                     // dd($ans);
                     
@@ -177,34 +186,35 @@ class DeliverablesController extends Controller
                         <g transform="translate(40,-40)">
                         <g class="x axis" transform="translate(0,203)">
                                 <g class="tick" transform="translate(40,0)" style="opacity: 1;">
-                                <text dy=".71em" y="9" x="0" style="text-anchor: middle;">'.$chart_name.'</text>
+                                <text dy=".71em" y="11" x="3" style="text-anchor: middle;">'.$chart_name.'</text>
                             </g>
                             <path class="domain" d="M0,6V0H900V6"></path>
                         </g>
                             <g class="y axis">
-                                <g class="tick" transform="translate(0,200)" style="opacity: 1;"><line x2="-6" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges"></line>
+                                <g class="tick" transform="translate(0,200)" style="opacity: 1;"><line x2="90" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges"></line>
                                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">0</text>
                             </g>
-                                <g class="tick" transform="translate(0,160)" style="opacity: 1;"><line x2="-6" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges"></line>
+                                <g class="tick" transform="translate(0,160)" style="opacity: 1;"><line x2="90" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges" style="opacity: .2;"></line>
                                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">2</text>
                             </g>
-                                <g class="tick" transform="translate(0,120)" style="opacity: 1;"><line x2="-6" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges"></line>
+                                <g class="tick" transform="translate(0,120)" style="opacity: 1;"><line x2="90" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges" style="opacity: .2;"></line>
                                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">4</text>
                             </g>
-                                <g class="tick" transform="translate(0,80)" style="opacity: 1;"><line x2="-6" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges"></line>
+                                <g class="tick" transform="translate(0,80)" style="opacity: 1;"><line x2="90" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges" style="opacity: .2;"></line>
                                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">6</text>
                             </g>
-                                <g class="tick" transform="translate(0,40)" style="opacity: 1;"><line x2="-6" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges"></line>
+                                <g class="tick" transform="translate(0,40)" style="opacity: 1;"><line x2="90" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges" style="opacity: .2;"></line>
                                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">8</text>
                             </g>
-                                <g class="tick" transform="translate(0,0)" style="opacity: 1;"><line x2="-6" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges"></line>
+                                <g class="tick" transform="translate(0,0)" style="opacity: 1;"><line x2="90" y2="0" fill="none" stroke="#000" shape-rendering="crispEdges" style="opacity: .2;"></line>
                                 <text dy=".32em" x="-9" y="0" style="text-anchor: end;">10</text>
                             </g>
                     
-                            <path class="domain" d="M-6,0H0V200H-6" fill="none" stroke="#000" shape-rendering="crispEdges"></path>
-                        </g>
-                            <rect class="bar" x="10" width="60" y="'. 200 - $bar_height.'" height="'.$bar_height.'" fill="'.$chart_color.'"></rect>
-                        </g>
+                        </g>';
+                    if ($score !== 0) {
+                        $svg = $svg. '<rect class="bar" x="15" width="60" y="'. 200 - $bar_height.'" height="'.$bar_height.'" fill="'.$chart_color.'"></rect>';
+                    }
+                    $svg = $svg.'</g>
                     </svg>';
 
                     // $svg = '<svg viewBox="0 0 60 180" style="font-family:sans-serif;">
@@ -403,6 +413,61 @@ class DeliverablesController extends Controller
                     $chart = '<img src="data:image/svg+xml;base64,'.base64_encode($svg).'" style="width:100%;"/>';
                     // $chart = '<img alt="" style="width:300px; margin-top:10px" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InJlZCIvPjwvc3ZnPg==" /> ';
                     $html_aux = $html_aux . $chart;
+                } elseif ($dinamic_aux[0] == 'now-date') {
+                    date_default_timezone_set('America/Sao_Paulo');
+                    // dd(date('m/d/Y h:i:s a', time()));
+
+                    if ($dinamic[0] == "dia") {
+                        $date = date('d', time());
+                        $html_aux = $html_aux.$date;
+                    } else if ($dinamic[0] == "mes,toString()") {
+                        $date_aux = date('m', time());
+                        switch ($date_aux) {
+                            case 1:
+                                $date = "Janeiro";
+                                break;
+                            case 2:
+                                $date = "Fevereiro";
+                                break;
+                            case 3:
+                                $date = "Março";
+                                break;
+                            case 4:
+                                $date = "Abril";
+                                break;
+                            case 5:
+                                $date = "Maio";
+                                break;
+                            case 6:
+                                $date = "Junho";
+                                break;
+                            case 7:
+                                $date = "Julho";
+                                break;
+                            case 8:
+                                $date = "Agosto";
+                                break;
+                            case 9:
+                                $date = "Setembro";
+                                break;
+                            case 10:
+                                $date = "Outubro";
+                                break;
+                            case 11:
+                                $date = "Novembro";
+                                break;
+                            case 12:
+                                $date = "Dezembro";
+                                break;
+                        }
+                        $html_aux = $html_aux.$date;
+                    } else if ($dinamic[0] == "mes") {
+                        $date = date('m', time());
+                        $html_aux = $html_aux.$date;
+                    } else if ($dinamic[0] == "ano") {
+                        $date = date('Y', time());
+                        $html_aux = $html_aux.$date;
+                    }
                 }
 
             }
@@ -499,7 +564,7 @@ class DeliverablesController extends Controller
         // $pdf->setOptions($options);
         // $pdf->set_option('isRemoteEnabled', TRUE);
         
-        return $pdf->save(storage_path('app/public/pdfs/'.$deliverable->name.'.pdf'))->stream('download.pdf');
+        return $pdf->stream('download.pdf');
 
     }
 
@@ -563,15 +628,54 @@ class DeliverablesController extends Controller
 
     public function update(Deliverable $deliverable)
     {
-        $deliverable->update(
-            Request::validate([
-                'name' => ['required', 'max:100'],
-                'html' => ['required'],
-                'form_id' => ['required'],
-                'header' => ['nullable'],
-                'footer' => ['nullable'],
-            ])
-        );
+        // dd(Request::collect('form_id')[0]);
+        Request::validate([
+            'name' => ['required', 'max:100'],
+            'html' => ['required'],
+            'form_id' => ['required'],
+            'header' => ['nullable'],
+            'footer' => ['nullable'],
+        ]);
+
+        // dd($deliverable->automations()->get());
+
+        if (Request::collect('form_id')[0] !== $deliverable->form_id) {
+            $flows = $deliverable->automations()->get();
+
+            foreach ($flows as $flow) {
+                $plugin = $flow->typeform_plugin;
+                $form = Auth::user()->account->forms()->find(Request::collect('form_id')[0]);
+                // dd($form);
+
+                $responseWebhook = Http::withHeaders([
+                    'Authorization' => 'Bearer '.$plugin->token,
+                    'Content-Type' => 'application/json',
+                ])->withBody('
+                    {
+                        "enabled" : true,
+                        "secret" : "'.$plugin->token.'",
+                        "url" : "http://google.com",
+                        "verify_ssl" : false
+                    }
+                ', 'application/json')->put('https://api.typeform.com/forms/'. $form->fid . '/webhooks/"dinamify' . $flow->id.'"');
+
+                if(array_key_exists('code',$responseWebhook->json())){
+                    if ($responseWebhook->json()['code'] == 'AUTHENTICATION_FAILED') {
+                        return Redirect::back()->with('error', 'A Autenticação do Plugin '. $plugin->name .' Falhou.');
+                    }
+                }
+
+                $responseWebhook = Http::withHeaders([
+                    'Authorization' => 'Bearer '.$plugin->token,
+                    'Content-Type' => 'application/json',
+                ])->delete('https://api.typeform.com/forms/'. $form->fid . '/webhooks/"dinamify' . $flow->id.'"');
+
+            }
+            unset($flow);
+        }
+
+        $deliverable->update(Request::all());
+
 
         return Redirect::back()->with('success', 'Entregável atualizado!');
     }

@@ -11,7 +11,7 @@
           <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="/settings/images">
             <icon name="image" class="w-8 h-8 fill-gray-700 group-hover:fill-gray-900" />
           </Link>
-          <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="#">
+          <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="/settings/users">
             <icon name="person" class="w-8 h-8 fill-gray-700 group-hover:fill-gray-900" />
           </Link>
           <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="#">

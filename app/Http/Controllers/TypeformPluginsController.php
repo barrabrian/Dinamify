@@ -31,7 +31,7 @@ class TypeformPluginsController extends Controller
 
 
         if (array_key_exists("code",$responseForms->json())) {
-            return Redirect::back()->with('success', 'Token inválido!');
+            return Redirect::back()->with('error', 'Token inválido!')->withErrors(['token' => 'Token inválido']);
             // dd($responseForms->json()["code"]);
         } else {
 
@@ -282,12 +282,25 @@ class TypeformPluginsController extends Controller
 
     public function store()
     {
-        Auth::user()->account->typeform_plugins()->create(
-            Request::validate([
-                'name' => ['required', 'max:50'],
-                'token' => ['required', 'max:350'],
-            ])
-        );
+        
+        Request::validate([
+            'name' => ['required', 'max:50'],
+            'token' => ['required', 'max:350'],
+        ]);
+
+        $responseForms = Http::withHeaders([
+            'Authorization' => 'Bearer '. Request::collect('token')[0],
+            'Content-Type' => 'application/json',
+        ])
+        ->get('https://api.typeform.com/forms?page=1&page_size=25');
+
+        if(array_key_exists('code',$responseForms->json())){
+            if ($responseForms->json()['code'] == 'AUTHENTICATION_FAILED') {
+                return Redirect::back()->with('error', 'Token inválido.')->withErrors(['token' => 'Token inválido']);
+            }
+        }
+
+        Auth::user()->account->typeform_plugins()->create(Request::all());
 
         return Redirect::route('plugins')->with('success', 'Integração adicionada!');
     }
@@ -306,12 +319,25 @@ class TypeformPluginsController extends Controller
 
     public function update(TypeformPlugin $plugin)
     {
-        $plugin->update(
-            Request::validate([
-                'name' => ['required', 'max:50'],
-                'token' => ['required', 'max:350'],
-            ])
-        );
+        
+        Request::validate([
+            'name' => ['required', 'max:50'],
+            'token' => ['required', 'max:350'],
+        ]);
+
+        $responseForms = Http::withHeaders([
+            'Authorization' => 'Bearer '. Request::collect('token')[0],
+            'Content-Type' => 'application/json',
+        ])
+        ->get('https://api.typeform.com/forms?page=1&page_size=25');
+
+        if(array_key_exists('code',$responseForms->json())){
+            if ($responseForms->json()['code'] == 'AUTHENTICATION_FAILED') {
+                return Redirect::back()->with('error', 'Token inválido.')->withErrors(['token' => 'Token inválido']);
+            }
+        }
+
+        $plugin->update(Request::all());
 
         return Redirect::back()->with('success', 'Integração atualizada.');
     }

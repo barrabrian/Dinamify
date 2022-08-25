@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTypeformResponsesTable extends Migration
+class CreateTypeformRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateTypeformResponsesTable extends Migration
      */
     public function up()
     {
-        Schema::create('typeform_responses', function (Blueprint $table) {
+        Schema::create('typeform_requests', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('account_id')->index();
             $table->string('event_id');
             $table->string('typeform_signature');
-            $table->string('fid');
-            $table->string('rid');
+            $table->string('form_id');
+            $table->string('response_id');
             $table->string('value');
+            $table->integer('ebook_id')->nullable()->index();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +34,6 @@ class CreateTypeformResponsesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('typeform_responses');
+        Schema::dropIfExists('typeform_requests');
     }
 }

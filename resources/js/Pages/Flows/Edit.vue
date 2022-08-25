@@ -16,6 +16,11 @@
                     <!-- <Link class="btn-gray px-8" :href="`/flows/${flow.id}/execute`">
                         Executar
                     </Link> -->
+                    <div v-if="responses_on_standby.length > 0" class="flex items-center gap-2 border-dashed border-2 border-yellow-300 rounded bg-yellow-100 pl-4">
+                      <icon name="warning" class="w-4 h-4 fill-gray-500 inline mr-1" />
+                      <span class="italic text-xs">Existem {{ responses_on_standby.length }} Respostas Não Processadas</span>
+                      <span class="font-bold text-xs cursor-pointer py-2 px-4" @click="showResponses = true">Ver</span>
+                    </div>
                     <dropdown class="" placement="bottom-end">
                       <template #default>
                         <div class="inline btn-gray px-8">
@@ -27,8 +32,11 @@
                           <div class="block w-full text-left px-6 py-2 rounded-lg hover:text-white hover:bg-indigo-900 font-bold cursor-pointer" @click="showTest = true">
                             Um Teste
                           </div>
+                          <div class="block w-full text-left px-6 py-2 rounded-lg hover:text-white hover:bg-indigo-900 font-bold cursor-pointer" @click="showExec = true">
+                            Uma Resposta Específica
+                          </div>
                           <Link class="block text-left px-6 py-2 rounded-lg hover:text-white hover:bg-indigo-900 font-bold" :href="`/flows/${flow.id}/execute`">
-                            No Histórico de Respostas
+                            Todas as Respostas
                           </Link>
                         </div>
                       </template>
@@ -81,8 +89,8 @@
             </div>
 
             <div class="px-12 py-4 border-t border-gray-300 bg-gray-200 flex justify-between items-center gap-6 absolute bottom-0 w-full">
-              <span class="italic">Entregáveis Gerados: {{ ebooks.length }}</span>
-              <span class="btn-gray text-xs cursor-pointer py-2 px-4" @click="showEbooks = true">Ver Entregáveis Gerados</span>
+                <span class="italic">Entregáveis Gerados: {{ ebooks.length }}</span>
+                <span class="btn-gray text-xs cursor-pointer py-2 px-4" @click="showEbooks = true">Ver Entregáveis</span>
             </div>
 
         </div>
@@ -94,16 +102,51 @@
             <div class="mb-6">
                 <h5 class="text-2xl font-bold">Teste:</h5>
             </div>
-            <div class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
-                <select-input class="pb-4 w-full " v-model="testing.response_id" label="Selecione a Resposta" >
+            <div v-if="form.email_question_id !== null" class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <select-input class="pb-4 w-full " v-model="testing.response_id" :error="testing.errors.response_id" label="Selecione a Resposta" >
                     <option v-for="(response, index) in responses" :key="index" :value="response.response_id">{{ response.value }}</option>
                 </select-input>
-                <text-input v-model="testing.email" class="w-full pb-4" placeholder="" label="Email" />
+                <text-input v-model="testing.email" :error="testing.errors.email" class="w-full pb-4" placeholder="" label="Email" />
                 <loading-button :loading="testing.processing" type="button" class="btn-emerald cursor-pointer mt-2 w-full text-center" @click="test">
                     Testar
                 </loading-button>
             </div>
+            <div v-else class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <div class="text-gray-500 text-center text-sm">Identifique o Campo de Email no Passo 3</div>
+            </div>
+            <div v-if="testing.return.includes('http')" class="flex flex-col justify-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6 mt-4">
+                <p>Link:</p>
+                <a class="flex flex-row justify-between items-center" :href="testing.return" target="_blank" rel="noopener noreferrer">
+                  <div class="text-gray-500 mt-2 text-xs truncate inline w-80 underline">{{ testing.return }}</div>
+                  <icon name="preview" class="w-4 h-4 fill-gray-400 ml-2" />
+                </a>
+            </div>
+        </div>
+    </sidebar-modal>
 
+    <sidebar-modal :show="showExec" @close="showExec = false">
+        <div>
+            <div class="mb-6">
+                <h5 class="text-2xl font-bold">Executar:</h5>
+            </div>
+            <div v-if="form.email_question_id !== null" class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <select-input class="pb-4 w-full " v-model="execute.response_id" :error="execute.errors.response_id" label="Selecione a Resposta" >
+                    <option v-for="(response, index) in responses" :key="index" :value="response.response_id">{{ response.value }}</option>
+                </select-input>
+                <loading-button :loading="execute.processing" type="button" class="btn-emerald cursor-pointer mt-2 w-full text-center" @click="executeOnly(execute.response_id)">
+                    Executar
+                </loading-button>
+            </div>
+            <div v-else class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <div class="text-gray-500 text-center text-sm">Identifique o Campo de Email no Passo 3</div>
+            </div>
+            <div v-if="execute.return.includes('http')" class="flex flex-col justify-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6 mt-4">
+                <p>Link:</p>
+                <a class="flex flex-row justify-between items-center" :href="execute.return" target="_blank" rel="noopener noreferrer">
+                  <div class="text-gray-500 mt-2 text-xs truncate inline w-80 underline">{{ execute.return }}</div>
+                  <icon name="preview" class="w-4 h-4 fill-gray-400 ml-2" />
+                </a>
+            </div>
         </div>
     </sidebar-modal>
 
@@ -131,6 +174,36 @@
             </div>
             <div v-if="ebooks.length === 0 || !ebooks.length" class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
                 <div class="text-gray-500 text-center text-sm">Não tem nada aqui ainda :/</div>
+            </div>
+        </div>
+    </sidebar-modal>
+
+    <sidebar-modal :show="showResponses" @close="showResponses = false">
+        <div>
+            <div class="mb-6">
+                <h5 class="text-2xl font-bold">Respostas Não Processadas:</h5>
+            </div>
+            <div v-if="flow.email_question_id">
+              <div v-for="(response, index) in responses_on_standby" :key="index" class="flex items-center space-x-4 rounded bg-gray-100 shadow p-4 mb-4">
+                  <div class="flex-shrink-0">
+                      <icon name="warning" class="w-8 h-8 fill-gray-400" />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                      <p class="text-xs italic text-gray-500 mb-1">
+                          {{ response.created_at }} 
+                      </p>
+                      <p class="text-sm font-medium text-gray-900 ">
+                          {{ response.email }} 
+                      </p>
+                  </div>
+                  <loading-button :loading="execute.processing" class="inline-flex cursor-pointer items-center text-base font-semibold text-gray-900 spinner-dark" @click="executeOnly(response.id);reload()">
+                      <!-- <Link :href="`/flows/${flow.id}/execute/${response.id}`">Executar</Link> -->
+                      Executar
+                  </loading-button>
+              </div>
+            </div>
+            <div v-else class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <div class="text-gray-500 text-center text-sm">Primeiro Identifique o Campo de Email no Passo 3</div>
             </div>
         </div>
     </sidebar-modal>
@@ -172,6 +245,7 @@ export default {
     active_campaign_plugins: Array,
     flow: Object,
     ebooks: Array,
+    responses_on_standby: Array,
   },
   data() {
     return {
@@ -186,14 +260,28 @@ export default {
       responses: {},
       showTest: false,
       showEbooks: false,
+      showExec: false,
+      showResponses: false,
       testing: {
         response_id: null,
         flow_id: this.flow.id,
         email: '',
         return: '',
         processing : false,
+        errors: {
+          email: null,
+          response_id: null,
+        },
       },
-      // ebooks: [],
+      execute: {
+        response_id: null,
+        flow_id: this.flow.id,
+        return: '',
+        processing : false,
+        errors: {
+          response_id: null,
+        },
+      },
     }
   },
   mounted() {
@@ -209,10 +297,14 @@ export default {
           this.$page.props.flash.error = null;
         }
     });
-    axios.get('/api/responses?question_id=' + this.flow.email_question_id)
-    .then (response => {
-        this.responses = response.data;
-    });
+    if (this.form.email_question_id !== null) {
+      axios.get('/api/responses?question_id=' + this.flow.email_question_id)
+      .then (response => {
+          this.responses = response.data;
+      });
+    } else {
+      this.form.errors.email_question_id = "Este campo é obrigatório.";
+    }
   },
   watch: {
     'form.deliverable_id' : function (value) {
@@ -230,6 +322,15 @@ export default {
             // console.log(this.variables);
         })
     },
+    'form.email_question_id' : function (value) {
+      if (this.form.email_question_id !== null) {
+        this.form.errors.email_question_id = undefined;
+        axios.get('/api/responses?question_id=' + value)
+        .then (response => {
+            this.responses = response.data;
+        });
+      }
+    }
   },
   methods: {
     update() {
@@ -267,11 +368,59 @@ export default {
       } else {
         this.testing.processing = false;
         this.$page.props.flash.error = "Preencha os todos os campos!";
+        if (this.testing.email == ''){
+          this.testing.errors.email = 'Este campo é obrigatório';
+        } 
+        if (this.testing.response_id == undefined || this.testing.response_id == null) {
+          this.testing.errors.response_id = 'Este campo é obrigatório';
+        }
         setTimeout(() => {
             this.$page.props.flash.error = null;
         },5000);
       }
     },
+    async executeOnly(response_id){
+      this.execute.processing = true;
+      if (response_id !== undefined && response_id !== null && response_id !== '') {
+        try {
+           axios.get('/api/flows/execute?flow_id=' + this.execute.flow_id + '&ans_id=' + response_id)
+          .then (response => {
+              this.execute.return = response.data;
+              this.execute.processing = false;
+              if (this.execute.return.includes('http')) {
+                this.$page.props.flash.success = 'Fluxo executado!';
+                setTimeout(() => {
+                    this.$page.props.flash.success = null;
+                },5000);
+              } else {
+                this.$page.props.flash.error = this.execute.return;
+                setTimeout(() => {
+                    this.$page.props.flash.error = null;
+                },5000);
+              }
+          });
+        } catch (error) {
+          this.$page.props.flash.error = "Erro: O Entregável possui variáveis de múltiplas Origens de Dados";
+          console.log(error);
+          setTimeout(() => {
+              this.$page.props.flash.error = null;
+          },5000);
+        }
+       
+      } else {
+        this.execute.processing = false;
+        this.$page.props.flash.error = "Preencha os todos os campos!";
+        this.execute.errors.response_id = 'Este campo é obrigatório';
+        setTimeout(() => {
+            this.$page.props.flash.error = null;
+        },5000);
+      }
+    },
+    reload(){
+      if (!this.$page.props.flash.error){
+        window.location.reload();
+      }
+    }
   },
 }
 </script>

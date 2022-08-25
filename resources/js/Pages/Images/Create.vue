@@ -5,13 +5,13 @@
     <div class="shadow-lg grid grid-cols-12 grid-flow-col border border-gray-300 rounded h-screen" style="height: calc(100vh - 150px - 3rem);">
       <div class="bg-gray-200 border-r-2 border-gray-300 shadow-lg">
         <div class="flex flex-col justify-center items-top">
-          <Link class="group flex justify-center py-8 items-center w-full border-b border-gray-300" href="#">
+          <Link class="group flex justify-center py-8 items-center w-full border-b border-gray-300" href="/settings/plugins">
             <icon name="plugin" class="w-8 h-8 fill-gray-700 group-hover:fill-gray-900" />
           </Link>
-          <Link class="group flex justify-center py-8 items-center bg-white w-full border-b border-gray-300" href="settings/plugins">
+          <Link class="group flex justify-center py-8 items-center bg-white w-full border-b border-gray-300" href="/settings/images">
             <icon name="image" class="w-8 h-8 fill-gray-700 group-hover:fill-gray-900" />
           </Link>
-          <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="#">
+          <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="/settings/users">
             <icon name="person" class="w-8 h-8 fill-gray-700 group-hover:fill-gray-900" />
           </Link>
           <Link class="group flex justify-center py-8 items-center  w-full border-b border-gray-300" href="#">

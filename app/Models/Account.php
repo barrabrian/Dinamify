@@ -79,4 +79,9 @@ class Account extends Model
     {
         return $this->hasMany(Ebook::class);
     }
+
+    public function typeform_requests()
+    {
+        return $this->hasMany(TypeformRequest::class);
+    }
 }

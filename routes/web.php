@@ -171,7 +171,7 @@ Route::put('deliverables/{deliverable}', [DeliverablesController::class, 'update
     ->name('deliverables.update')
     ->middleware('auth');
 
-Route::get('deliverables/{deliverable}/createpdf', [DeliverablesController::class, 'createPDF'])
+Route::get('deliverables/{deliverable}/live_preview/{response}', [DeliverablesController::class, 'createPDF'])
     ->name('deliverables.createpdf');
 
 
@@ -202,6 +202,9 @@ Route::get('flows/{flow}/execute', [AutomationsController::class, 'execute'])
     ->name('flows.execute')
     ->middleware('auth');
 
+Route::get('flows/{flow}/execute/{response_id}', [AutomationsController::class, 'executeOnly'])
+    ->name('flows.executeOnly')
+    ->middleware('auth');
 
 
 // Images
@@ -236,7 +239,7 @@ Route::get('settings/users', [UsersController::class, 'index'])
     ->name('users')
     ->middleware('auth');
 
-Route::get('users/create', [UsersController::class, 'create'])
+Route::get('settings/users/create', [UsersController::class, 'create'])
     ->name('users.create')
     ->middleware('auth');
 

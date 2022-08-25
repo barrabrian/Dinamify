@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="flex items-center justify-left flex-wrap font-bold">
-      <Link class="group flex items-center py-4 px-6 border-r border-gray-900" :class="isUrl('') ? 'bg-gradient-to-b from-gray-500 to-gray-600' : ''" href="/">
-        <icon name="bezier" class="mr-2 w-4 h-4" :class="isUrl('') ? 'fill-emerald-400' : 'fill-white group-hover:fill-white'" />
-        <div :class="isUrl('') ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Fluxos</div>
+      <Link class="group flex items-center py-4 px-6 border-r border-gray-900" :class="(isUrl('') || isUrl('flows')) ? 'bg-gradient-to-b from-gray-500 to-gray-600' : ''" href="/">
+        <icon name="bezier" class="mr-2 w-4 h-4" :class="(isUrl('') || isUrl('flows')) ? 'fill-emerald-400' : 'fill-white group-hover:fill-white'" />
+        <div :class="(isUrl('') || isUrl('flows')) ? 'text-white' : 'text-indigo-300 group-hover:text-white'">Fluxos</div>
       </Link>
 
 

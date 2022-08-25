@@ -31,6 +31,7 @@ Route::get('/responses', [ResponsesController::class, 'index']);
 Route::get('/alternatives', [AlternativesController::class, 'index']);
 Route::get('/flows/test', [AutomationsController::class, 'test']);
 Route::get('/activecampaign/callApi', [ActiveCampaignPluginsController::class, 'callApi']);
+Route::get('flows/execute', [AutomationsController::class, 'executeOnly']);
 
 
 Route::post('/typeform', [TypeformApiController::class, 'handleWebhook'])

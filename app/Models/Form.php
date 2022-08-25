@@ -36,7 +36,7 @@ class Form extends Model
 
     public function responses()
     {
-        return $this->hasMany(Deliverable::class, 'form_id', 'fid');
+        return $this->hasMany(Response::class, 'form_id', 'fid');
     }
 
     public function scopeFilter($query, array $filters)

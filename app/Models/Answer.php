@@ -21,6 +21,13 @@ class Answer extends Model
         return $this->belongsTo(Question::class, 'qid', 'question_id');
     }
 
+    public function response()
+    {
+        return $this->belongsTo(Response::class, 'answer_id', 'rid');
+    }
+
+    
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

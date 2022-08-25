@@ -66,9 +66,9 @@
                 <div class="col-span-2 ">
                     <div class="font-bold text-xl w-full flex justify-between items-center">
                         Preview    
-                        <a class="px-2 pb-1 text-gray-500 group rounded cursor-pointer hover:text-gray-900 hover:bg-gray-200" :href="`/deliverables/${deliverable.id}/createpdf`" target="_blank"  to="deliverables.createpdf" rel="noopener noreferrer">
+                        <div class="px-2 pb-1 text-gray-500 group rounded cursor-pointer hover:text-gray-900 hover:bg-gray-200" @click="showPreview = true" >
                             <icon name="preview" class="w-5 h-4 fill-gray-700 group-hover:fill-gray-600 inline" />
-                        </a>
+                        </div>
                     </div>
                     <div class="bg-white w-100 rounded-md shadow overflow-auto mt-2 p-8" style="height: calc(100vh - 350px - 6rem);" >
                         <iframe id="preview" style="width:100%; overflow: hidden;" frameborder="0" ></iframe>
@@ -100,13 +100,16 @@
             <h5 class="text-xl font-bold mb-6">Variáveis Personalizadas:</h5>
             <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
                 <li class="mr-2">
-                    <span class="inline-block p-4 rounded-t-lg active hover:text-gray-600 hover:bg-gray-50 cursor-pointer" :class="(activeTab == 0)? 'active bg-gray-100' : ''" @click="activeTab = 0">Respostas</span>
+                    <span class="inline-block p-2 rounded-t-lg active hover:text-gray-600 hover:bg-gray-50 cursor-pointer" :class="(activeTab == 0)? 'active bg-gray-100' : ''" @click="activeTab = 0">Respostas</span>
                 </li>
                 <li class="mr-2">
-                    <span class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 cursor-pointer" :class="(activeTab == 1)? 'active bg-gray-100' : ''" @click="activeTab = 1">Condicionais</span>
+                    <span class="inline-block p-2 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 cursor-pointer" :class="(activeTab == 1)? 'active bg-gray-100' : ''" @click="activeTab = 1">Condicionais</span>
                 </li>
                 <li class="mr-2">
-                    <span class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 cursor-pointer" :class="(activeTab == 2)? 'active bg-gray-100' : ''" @click="activeTab = 2">Gráficos</span>
+                    <span class="inline-block p-2 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 cursor-pointer" :class="(activeTab == 2)? 'active bg-gray-100' : ''" @click="activeTab = 2">Gráficos</span>
+                </li>
+                <li class="mr-2">
+                    <span class="inline-block p-2 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 cursor-pointer" :class="(activeTab == 3)? 'active bg-gray-100' : ''" @click="activeTab = 3">Data</span>
                 </li>
             </ul>
             <div v-if="activeTab == 0">
@@ -130,11 +133,11 @@
                 </div>
                 <div v-if="variables.length === 0 || !variables.length" class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
                     <div class="text-gray-500 mb-1 text-center text-sm">Não tem nada aqui ainda :/</div>
-                    <div class="font-bold text-gray-700 text-center text-lg">Tente selecionar outro formulário</div>
+                    <div class="font-bold text-gray-700 text-center text-lg">Tente selecionar outra Origem de Dados</div>
                 </div>
             </div>
             <div v-else-if="activeTab == 1">
-                <div class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <div v-if="form.form_id" class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
                     <select-input class="pb-4 w-full " v-model="condition.variable" label="Se" >
                         <option v-for="(variable, index) in condition_variables" :key="index" :value="variable.qid">{{ variable.title }}</option>
                     </select-input>
@@ -143,6 +146,9 @@
                     </select-input>
                     <div class="text-gray-500 mb-1 text-center text-xs">{{ condition.string }}</div>
                     <div class="font-bold text-gray-700 text-center text-lg cursor-pointer" @click="copyCondition">Copiar</div>
+                </div>
+                <div v-else class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                    <div class="font-bold text-gray-700 text-center text-lg">Tente selecionar uma Origem de Dados</div>
                 </div>
             </div>
             <div v-else-if="activeTab == 2">
@@ -194,6 +200,21 @@
                     </div>
                 </div>
             </div>
+            <div v-else-if="activeTab == 3">
+                <div class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                    <select-input class="pb-4 w-full " v-model="date.var" label="Componente" >
+                        <option value="dia">Dia</option>
+                        <option value="mes">Mês</option>
+                        <option value="ano">Ano</option>
+                    </select-input>
+                    <select-input v-if="date.var == 'mes'" class="pb-4 w-full " v-model="date.option" label="Formato" >
+                        <option value="">Número</option>
+                        <option value=",toString()">Texto</option>
+                    </select-input>
+                    <div class="text-gray-500 mb-1 text-center text-xs">{{ date.return }}</div>
+                    <div class="font-bold text-gray-700 text-center text-lg cursor-pointer" @click="copyTxt(date.return)">Copiar</div>
+                </div>
+            </div>
         </div>
     </sidebar-modal>
 
@@ -209,7 +230,7 @@
                 <div v-for="(image, index) in images" :key="index" class=" rounded shadow bg-gray-100">
                     <img class="object-cover w-full h-32 rounded-t" :src="image.image_path" >
                     <div class="flex items-center justify-center p-2">
-                        <div class="cursor-pointer items-center text-base font-semibold text-gray-900 " @click="copyTxt('<img stored src=&quot;'+ image.image_path + '&quot; alt=&quot;imagem&quot;>')">
+                        <div class="cursor-pointer items-center text-base font-semibold text-gray-900 " @click="copyTxt('<img stored src=&quot;'+ image.image_path + '&quot; class=&quot;&quot; style=&quot;&quot; alt=&quot;imagem&quot;>')">
                             Copiar
                         </div>
                     </div>
@@ -226,6 +247,31 @@
 
     <add-image-modal :show="showAddImg" @close="showAddImg = false"></add-image-modal>
 
+    <sidebar-modal :show="showPreview" @close="showPreview = false">
+        <div>
+            <div class="mb-6">
+                <h5 class="text-2xl font-bold">Live Preview:</h5>
+            </div>
+            <div v-if="form.form_id" class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <select-input class="pb-4 w-full " v-model="live_preview.question_id" :error="live_preview.errors.question_id" label="Selecione um Campo de Busca" >
+                    <option v-for="(variable, index) in variables" :key="index" :value="variable.id">{{ variable.title }}</option>
+                </select-input>
+                <select-input class="pb-4 w-full " v-model="live_preview.response_id" :error="live_preview.errors.response_id" label="Selecione a Resposta" >
+                    <option v-for="(response, index) in live_preview.responses" :key="index" :value="response.response_id">{{ response.value }}</option>
+                </select-input>
+                <a v-if="live_preview.response_id" class="btn-emerald cursor-pointer mt-2 w-full text-center" :href="`/deliverables/${deliverable.id}/live_preview/${live_preview.response_id}`" target="_blank"  to="deliverables.createpdf" rel="noopener noreferrer">
+                    Visualizar
+                </a>
+                <button v-else type="button" class="btn-emerald cursor-pointer mt-2 w-full text-center" :class="!live_preview.response_id ? 'opacity-50' : ''">
+                    Visualizar
+                </button>
+            </div>
+            <div v-else class="flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded bg-gray-100 p-6">
+                <div class="text-gray-500 text-center text-sm">Selecione uma Origem de Dados</div>
+            </div>
+        </div>
+    </sidebar-modal>
+
 
     <sidebar-modal :show="showHelp" @close="showHelp = false">
         <div>
@@ -239,6 +285,7 @@
 
         </div>
     </sidebar-modal>
+    
   
 
   </div>
@@ -302,18 +349,37 @@ export default {
             value: [],
         }],
       },
+      date: {
+        var: 'dia',
+        option: '',
+        return: '{{now-date[dia]}}',
+      },
+      live_preview: {
+        response_id: null,
+        question_id: null,
+        responses: [],
+        errors: {
+            response_id: null,
+            question_id: null,
+        },
+      },
       showVars: false,
       showImgs: false,
       showHF: false,
       showAddImg: false,
       showSC: false,
-      showHelp: false,
+      showHelp : false,
+      showPreview: false,
       activeTab: 0,
       ruleIndex: 0,
     }
   },
   watch: {
     'form.form_id' : function (value) {
+        this.$page.props.flash.warning = 'Ao alterar a Origem de Dados certifique-se de corrigir os Fluxos que utilizam este modelo.';
+        setTimeout(() => {
+            this.$page.props.flash.warning = null;
+        },3500);
         axios.get('/api/questions?form_id=' + value)
         .then (response => {
             this.variables = response.data;
@@ -350,6 +416,23 @@ export default {
             }
         }
         this.setChartString();  
+    },
+    'date.var' : function (value) {
+        if (value == "mes") {
+            this.date.return = '{{now-date[' + value + this.date.option + ']}}';
+        } else {
+            this.date.option = '';
+            this.date.return = '{{now-date[' + value + ']}}';
+        }
+    },
+    'date.option' : function (value) {
+        this.date.return = '{{now-date[' + this.date.var + value + ']}}';
+    },
+    'live_preview.question_id' : function (value) {
+        axios.get('/api/responses?question_id=' + value)
+        .then (response => {
+            this.live_preview.responses = response.data;
+        });
     },
   },
   mounted() {
@@ -404,8 +487,12 @@ export default {
             if (aux.length > 1) {
                 if (aux[1].split('[')[0] == 'question') {
                     normalized_html = normalized_html + '<span class="dinamify-var" style="color:green;">var</span>';
-                } else {
+                } else if (aux[1].split('[')[0] == 'now-date') {
+                    normalized_html = normalized_html + '<span class="dinamify-var" style="color:green;">now_date</span>';
+                } else if (aux[1].split('[')[0] == 'vbar-chart' || aux[1].split('[')[0] == 'radar-chart' ) {
                     normalized_html = normalized_html + '<span class="dinamify-var" style="color:orange;margin: 50px auto;display:block;text-align:center;">chart</span>';
+                } else {
+                    normalized_html = normalized_html + '<span class="dinamify-var" style="color:purple;">unknown</span>';
                 }
             }
         });

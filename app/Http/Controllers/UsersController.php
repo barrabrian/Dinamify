@@ -43,7 +43,7 @@ class UsersController extends Controller
             'first_name' => ['required', 'max:50'],
             'last_name' => ['required', 'max:50'],
             'email' => ['required', 'max:50', 'email', Rule::unique('users')],
-            'password' => ['nullable'],
+            'password' => ['required'],
             'owner' => ['required', 'boolean'],
             'photo' => ['nullable', 'image'],
         ]);
@@ -77,8 +77,12 @@ class UsersController extends Controller
 
     public function update(User $user)
     {
-        if (App::environment('demo') && $user->isDemoUser()) {
-            return Redirect::back()->with('error', 'Updating the demo user is not allowed.');
+        // if (App::environment('demo') && $user->isDemoUser()) {
+        //     return Redirect::back()->with('error', 'Updating the demo user is not allowed.');
+        // }
+
+        if (!Auth::user()->owner && Auth::user()->id !== $user->id) {
+            return Redirect::back()->with('error', 'Você não tem permissão para editar este usuário.');
         }
 
         Request::validate([
@@ -100,24 +104,32 @@ class UsersController extends Controller
             $user->update(['password' => Request::get('password')]);
         }
 
-        return Redirect::back()->with('success', 'User updated.');
+        return Redirect::back()->with('success', 'Usuário atualizado!');
     }
 
     public function destroy(User $user)
     {
-        if (App::environment('demo') && $user->isDemoUser()) {
-            return Redirect::back()->with('error', 'Deleting the demo user is not allowed.');
+        if ($user->isDemoUser()) {
+            return Redirect::back()->with('error', 'Deletar este usuário não é permitido.');
+        }
+
+        if (!Auth::user()->owner && Auth::user()->id !== $user->id) {
+            return Redirect::back()->with('error', 'Você não tem permissão para deletar este usuário.');
         }
 
         $user->delete();
 
-        return Redirect::back()->with('success', 'User deleted.');
+        return Redirect::back()->with('success', 'Usuário deletado.');
     }
 
     public function restore(User $user)
     {
+        if (!Auth::user()->owner && Auth::user()->id !== $user->id) {
+            return Redirect::back()->with('error', 'Você não tem permissão para restaurar este usuário.');
+        }
+
         $user->restore();
 
-        return Redirect::back()->with('success', 'User restored.');
+        return Redirect::back()->with('success', 'Usuário restaurado.');
     }
 }

@@ -28,6 +28,11 @@ class Response extends Model
         return $this->hasMany(Answer::class, 'response_id', 'rid');
     }
 
+    public function ebook()
+    {
+        return $this->belongsTo(Ebook::class, 'rid', 'response_id');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
