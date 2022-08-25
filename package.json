@@ -38,5 +38,9 @@
         "vue": "^3.2.27",
         "vue-loader": "^16.2.0",
         "webpack-node-externals": "^3.0.0"
+    },
+    "engines": {
+        "node": ">= 6.0.0",
+        "npm": ">= 3.0.0"
     }
 }
