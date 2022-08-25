@@ -1,10 +1,17 @@
-# Dinamify
+# Ping CRM
 
-A solution for making personalized info-products scalable.
+A demo application to illustrate how Inertia.js works.
 
+![](https://raw.githubusercontent.com/inertiajs/pingcrm/master/screenshot.png)
 
-## Info
+## Installation
 
+Clone the repo locally:
+
+```sh
+git clone https://github.com/inertiajs/pingcrm.git pingcrm
+cd pingcrm
+```
 
 Install PHP dependencies:
 
