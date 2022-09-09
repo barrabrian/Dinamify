@@ -16,8 +16,8 @@ class CreateQuestionsTable extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('account_id')->index();
-            $table->integer('form_id')->index();
-            $table->string('title', 45);
+            $table->string('form_id');
+            $table->string('title', 250);
             $table->string('description', 350)->nullable();
             $table->string('qid', 250)->nullable();
             $table->string('ref', 250)->nullable();

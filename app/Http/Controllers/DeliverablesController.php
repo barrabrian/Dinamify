@@ -572,7 +572,7 @@ class DeliverablesController extends Controller
     {
         return Inertia::render('Deliverables/Create',[
             'forms' => Auth::user()->account->forms()
-                ->orderBy('name')
+                ->orderBy('title')
                 ->get(),
             'images' => Auth::user()->account->images()
                 ->orderBy('id')
