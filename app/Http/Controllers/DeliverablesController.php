@@ -613,7 +613,7 @@ class DeliverablesController extends Controller
                 'deleted_at' => $deliverable->deleted_at,
             ],
             'forms' => Auth::user()->account->forms()
-                ->orderBy('name')
+                ->orderBy('title')
                 ->get(),
             'images' => Auth::user()->account->images()
                 ->orderBy('id')
