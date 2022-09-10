@@ -38,7 +38,7 @@ class TypeformApiController extends Controller
                 $response->token = $request->input('form_response.token');
                 $response->landing_id = $request->input('form_response.token');
                 $response->rid = $request->input('form_response.token');
-                $response->hidden_fields = implode("&", $request->input('form_response.hidden'));                        ;
+                // $response->hidden_fields = implode("&", $request->input('form_response.hidden'));                        ;
                 $response->submitted_at = $request->input('form_response.submitted_at');
                 $response->score = $request->input('form_response.calculated.score');
 

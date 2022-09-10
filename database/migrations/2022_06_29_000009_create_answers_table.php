@@ -27,7 +27,7 @@ class CreateAnswersTable extends Migration
             $table->string('value', 250)->nullable();
             // $table->string('hidden', 250)->nullable();
 
-            $table->integer('response_id')->nullable()->index();
+            $table->string('response_id',250)->nullable()->index();
 
             $table->timestamps();
             $table->softDeletes();

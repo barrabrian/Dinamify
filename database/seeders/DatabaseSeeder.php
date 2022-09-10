@@ -57,22 +57,22 @@ class DatabaseSeeder extends Seeder
             'deliverable_tag_id' => 883,
         ]);
 
-        Image::create([
-            'account_id' => $account->id,
-            'name' => 'Logo_MEN_ASC',
-            'image_path' => 'public/images/v8bIyrptfjRW7OH6Ck5x1swUJsuhQPbem1PxQcR3.png',
-        ]);
+        // Image::create([
+        //     'account_id' => $account->id,
+        //     'name' => 'Logo_MEN_ASC',
+        //     'image_path' => 'public/images/v8bIyrptfjRW7OH6Ck5x1swUJsuhQPbem1PxQcR3.png',
+        // ]);
 
-        Image::create([
-            'account_id' => $account->id,
-            'name' => 'Logo_header_MEN_ASC',
-            'image_path' => 'public/images/VbTwXaH8l2OcboLZgBnPbhyQgZGSibh9gqjuuW4W.png',
-        ]);
+        // Image::create([
+        //     'account_id' => $account->id,
+        //     'name' => 'Logo_header_MEN_ASC',
+        //     'image_path' => 'public/images/VbTwXaH8l2OcboLZgBnPbhyQgZGSibh9gqjuuW4W.png',
+        // ]);
 
-        Image::create([
-            'account_id' => $account->id,
-            'name' => 'namaste',
-            'image_path' => 'public/images/ULlfTtIE1yohbeCZs28Y9l01C83u5jL8HpqRnMK6.png',
-        ]);
+        // Image::create([
+        //     'account_id' => $account->id,
+        //     'name' => 'namaste',
+        //     'image_path' => 'public/images/ULlfTtIE1yohbeCZs28Y9l01C83u5jL8HpqRnMK6.png',
+        // ]);
     }
 }
