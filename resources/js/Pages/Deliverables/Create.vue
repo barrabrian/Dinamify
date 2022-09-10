@@ -80,10 +80,10 @@
                     <h5 class="text-2xl font-bold">Cabeçalho e Rodapé:</h5>
                 </div>
                 <div class="flex flex-col border-dashed border-2 border-gray-300 rounded bg-gray-100 p-4">
-                    <!-- <text-area-input v-model="form.header" :error="form.errors.header" class="pb-4 w-full " placeholder="Crie o cabeçalho em HTML aqui..." label="Cabeçalho" /> -->
+                    <text-area-input v-model="form.header" :error="form.errors.header" class="pb-4 w-full " placeholder="Crie o cabeçalho em HTML aqui..." label="Cabeçalho" />
                 </div>
                 <div class="flex mt-4 flex-col border-dashed border-2 border-gray-300 rounded bg-gray-100 p-4">
-                    <!-- <text-area-input v-model="form.footer" :error="form.errors.footer" class="pb-4 w-full " placeholder="Crie o rodapé em HTML aqui..." label="Rodapé" /> -->
+                    <text-area-input v-model="form.footer" :error="form.errors.footer" class="pb-4 w-full " placeholder="Crie o rodapé em HTML aqui..." label="Rodapé" />
                 </div>
 
             </div>
@@ -265,7 +265,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3'
 import Icon from '@/Shared/Icon'
 import Layout from '@/Shared/Layout'
 import TextInput from '@/Shared/TextInput'
-// import TextAreaInput from '@/Shared/TextareaInput'
+import TextAreaInput from '@/Shared/TextAreaInput'
 import SelectInput from '@/Shared/SelectInput'
 import LoadingButton from '@/Shared/LoadingButton'
 import SidebarModal from '@/Shared/SidebarModal'
