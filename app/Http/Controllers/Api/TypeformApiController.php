@@ -38,8 +38,11 @@ class TypeformApiController extends Controller
                 $response->token = $request->input('form_response.token');
                 $response->landing_id = $request->input('form_response.token');
                 $response->rid = $request->input('form_response.token');
-                $response->hidden_fields = "";                        ;
-                // $response->hidden_fields = implode("&", $request->input('form_response.hidden'));                        ;
+                $response->hidden_fields = "";    
+                // dd(sizeof($request->input('form_response.hidden')));
+                if (sizeof($request->input('form_response.hidden')) > 0) {
+                    $response->hidden_fields = implode("&", $request->input('form_response.hidden'));                        
+                }                    
                 $response->submitted_at = $request->input('form_response.submitted_at');
                 $response->score = $request->input('form_response.calculated.score');
 
@@ -71,9 +74,24 @@ class TypeformApiController extends Controller
                     } else if (array_key_exists("email",$question_ans)) {
                         $answer->value = $question_ans['email'];
                     } else if (array_key_exists("choice",$question_ans)) {
-                        $answer->aid = $question_ans['choice']['id'];
-                        $answer->aref = $question_ans['choice']['ref'];
                         $answer->value = $question_ans['choice']['label'];
+
+                        // $request_alternatives = array_search($answer->value, array_column(array_column($request->input('form_response.definition.fields'), 'choices')[$alt_index], 'label'));
+                        // $request_alternatives = array_column($request->input('form_response.definition.fields'), 'choices');
+                        $field_index = array_search($question_ans['field']['id'], array_column($request->input('form_response.definition.fields'), 'id'));
+                        // dd($alt_index);
+
+                        $alt_index = array_search($answer->value, array_column($request->input('form_response.definition.fields')[$field_index]['choices'], 'label'));
+                        $answer->aid = $request->input('form_response.definition.fields')[$field_index]['choices'][$alt_index]['id'];
+                        // dd($answer->aid);
+
+                        $dbAlt = Alternative::firstOrCreate([
+                            'account_id' => $form->account_id,
+                            'question_id' => $answer->aid,
+                            'label' => $answer->value,
+                            'aid' => $answer->aid,
+                        ]);
+                        // dd($dbAlt);
                     } 
 
                     // return $answer;
@@ -81,27 +99,27 @@ class TypeformApiController extends Controller
                     
                     if (array_key_exists("choices",$question_ans)) {
                         $choice_index = 0;
-                        foreach ($question_ans['choices']['ids'] as &$ans_choice) {
-                            $answer->aid = $ans_choice;
-                            $answer->value = $question_ans['choices']['labels'][$choice_index];
-                            if (array_key_exists("refs",$question_ans['choices'])) {
-                                $answer->aref = $question_ans['choices']['refs'][$choice_index];
-                            }
+                        // foreach ($question_ans['choices']['ids'] as &$ans_choice) {
+                        //     $answer->aid = $ans_choice;
+                        //     $answer->value = $question_ans['choices']['labels'][$choice_index];
+                        //     if (array_key_exists("refs",$question_ans['choices'])) {
+                        //         $answer->aref = $question_ans['choices']['refs'][$choice_index];
+                        //     }
 
-                            $dbanswer = Answer::firstOrCreate([
-                                'account_id' => $form->account_id,
-                                'question_id' => $answer->question_id,
-                                'question_ref' => $answer->question_ref,
-                                'answer_id' => $answer->answer_id,
-                                'response_id' => $answer->response_id,
-                                'type' => $answer->type,
-                                'value' => $answer->value,
-                                'aid' => $answer->aid ? $answer->aid : null,
-                                'aref' => $answer->aref ? $answer->aref : null,
-                            ]);
-                            $choice_index++;
-                        }
-                        unset($ans_choice);
+                        //     $dbanswer = Answer::firstOrCreate([
+                        //         'account_id' => $form->account_id,
+                        //         'question_id' => $answer->question_id,
+                        //         'question_ref' => $answer->question_ref,
+                        //         'answer_id' => $answer->answer_id,
+                        //         'response_id' => $answer->response_id,
+                        //         'type' => $answer->type,
+                        //         'value' => $answer->value,
+                        //         'aid' => $answer->aid ? $answer->aid : null,
+                        //         'aref' => $answer->aref ? $answer->aref : null,
+                        //     ]);
+                        //     $choice_index++;
+                        // }
+                        // unset($ans_choice);
                     } else {
 
                         // dd($answer);

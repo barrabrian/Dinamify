@@ -161,8 +161,10 @@ class DeliverablesController extends Controller
                     // dd($chart_color);
 
                     $score = 0;
+                    // dd($ans_id);
 
                     foreach ($score_conditions as $condition) {
+                        // dd($condition);
                         if ($ans_id == '') {
                             $ans = Answer::where('aid', $condition)->first();
                             $ans_id = $ans->answer_id;
